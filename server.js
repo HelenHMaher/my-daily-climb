@@ -7,9 +7,9 @@ const app = express();
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
-app.use(favicon(__dirname + "/build/HMlogo.gif"));
-app.use("/my-daily-climb/", express.static(path.join(__dirname, "build")));
-app.get("/heartbeath", function (req, res) {
+app.use(favicon(__dirname + "/build/favicon.png"));
+app.use(express.static(path.join(__dirname, "build")));
+app.get("/heartbeat", function (req, res) {
   res.send("<3");
 });
 
