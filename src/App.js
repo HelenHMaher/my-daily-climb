@@ -3,7 +3,7 @@ import React from "react";
 function App() {
   return (
     <div className="App">
-      <header className="App-header">My Climb Fitness Tracker</header>
+      <header className="App-header">My Daily Climb Fitness Tracker</header>
     </div>
   );
 }
