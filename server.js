@@ -20,7 +20,7 @@ app.get("/", function (req, res) {
   res.sendFile(path.join(__dirname, "build", "index.html"));
 });
 
-apiRoutes(app);
+//apiRoutes(app);
 
 app.use(function (req, res, next) {
   res.status(404).type("text").send("Not Found");
