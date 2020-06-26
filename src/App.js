@@ -21,6 +21,23 @@ function App() {
       <form className="logout" action="/logout">
         <button type="submit">Logout</button>
       </form>
+      <form className="register">
+        <div className="inputField">
+          <label>Username:</label>
+          <input type="text" name="username" />
+        </div>
+        <div className="inputField">
+          <label>Password:</label>
+          <input type="password" name="password" />
+        </div>
+        <div className="inputField">
+          <label>Confirm Password:</label>
+          <input type="password" name="password" />
+        </div>
+        <div className="inputField">
+          <input type="submit" value="Log In" />
+        </div>
+      </form>
     </div>
   );
 }
