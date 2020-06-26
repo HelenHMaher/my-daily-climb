@@ -5,7 +5,7 @@ function App() {
     <div className="App">
       <header className="App-header">My Daily Climb</header>
       <p>tracks the daily training and fitness for rock climbers</p>
-      <form className="login" action="/login" method="POST">
+      <form className="login">
         <div className="inputField">
           <label>Username:</label>
           <input type="text" name="username" />
