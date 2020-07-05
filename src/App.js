@@ -1,8 +1,13 @@
 import React from "react";
+import { BrowserRouter, Route } from "react-router-dom";
+import Login from "./views/login";
 
 function App() {
   return (
-REACT ROUTES
+    <BrowserRouter>
+      <header>My Daily Climb</header>
+      <Route path="/" component={Login} />
+    </BrowserRouter>
   );
 }
 

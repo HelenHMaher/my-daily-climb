@@ -4,7 +4,7 @@ const bodyParser = require("body-parser");
 const cors = require("cors");
 const path = require("path");
 const app = express();
-//const apiRoutes = require("./routes/api.js");
+const apiRoutes = require("./routes/api.js");
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
@@ -20,7 +20,7 @@ app.get("/", function (req, res) {
   res.sendFile(path.join(__dirname, "build", "index.html"));
 });
 
-//apiRoutes(app);
+apiRoutes(app);
 
 app.use(function (req, res, next) {
   res.status(404).type("text").send("Not Found");
