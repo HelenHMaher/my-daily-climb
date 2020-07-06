@@ -1,6 +1,5 @@
 const passport = require("passport");
-const express = require("express");
-const { Db } = require("mongodb");
+const bcrypt = require("bcrypt");
 
 module.exports = (app, db) => {
   function ensureAuthenticated(req, res, next) {
@@ -23,16 +22,14 @@ module.exports = (app, db) => {
 
   app.route("/login").post(
     passport.authenticate("local", {
-      successRedirect: "https://my-daily-climb.herokuapp.com/",
+      successRedirect: "/profile",
       failureRedirect: "/",
     })
   );
 
-  app.use(
-    "/prototype",
-    ensureAuthenticated,
-    express.static("public/prototype")
-  );
+  app.use("/profile", ensureAuthenticated, function (req, res) {
+    res.sendFile(__dirname + "/public/index.html");
+  });
 
   app.route("/logout").get(function (req, res) {
     req.logout();
@@ -42,7 +39,7 @@ module.exports = (app, db) => {
 
   app.route("/register").post(
     (req, res, next) => {
-      Db.collection("my-daily-climb").findOne(
+      db.collection("my-daily-climb").findOne(
         { username: req.body.username },
         (err, user) => {
           if (err) {
@@ -70,7 +67,7 @@ module.exports = (app, db) => {
     },
     passport.authenticate("local", { failureRedicret: "/" }),
     (req, res, next) => {
-      res.redirect("https://my-daily-climb.herokuapp.com/");
+      res.redirect("/profile");
     }
   );
 
