@@ -13,7 +13,7 @@ module.exports = (app, db) => {
   }
 
   app.route("/").get(function (req, res) {
-    res.sendFile(__dirname + "/public/index.html");
+    res.sendFile("/public/index.html");
   });
 
   // define the first route
@@ -24,11 +24,15 @@ module.exports = (app, db) => {
   app.route("/login").post(
     passport.authenticate("local", {
       failureRedirect: "/",
-    })
+    }),
+    (req, res, next) => {
+      const token = jwt.sign(req.user, "your_jwt_secret");
+      return res.json({ user: req.user, token });
+    }
   );
 
   app.use("/profile", ensureAuthenticated, function (req, res) {
-    res.sendFile(__dirname + "/public/index.html");
+    res.sendFile("/public/index.html");
   });
 
   app.route("/logout").get(function (req, res) {
