@@ -1,5 +1,6 @@
 const passport = require("passport");
 const bcrypt = require("bcrypt");
+const jwt = require("jsonwebtoken");
 
 module.exports = (app, db) => {
   function ensureAuthenticated(req, res, next) {
@@ -22,7 +23,6 @@ module.exports = (app, db) => {
 
   app.route("/login").post(
     passport.authenticate("local", {
-      successRedirect: "/profile",
       failureRedirect: "/",
     })
   );
@@ -48,7 +48,7 @@ module.exports = (app, db) => {
             res.redirect("/");
           } else {
             const hash = bcrypt.hashSync(req.body.password, 12);
-            Db.collection("my-daily-climb").insertOne(
+            db.collection("my-daily-climb").insertOne(
               {
                 username: req.body.username,
                 password: hash,
@@ -65,9 +65,14 @@ module.exports = (app, db) => {
         }
       );
     },
-    passport.authenticate("local", { failureRedicret: "/" }),
+    passport.authenticate(
+      "local",
+      { session: false },
+      { failureRedirect: "/" }
+    ),
     (req, res, next) => {
-      res.redirect("/profile");
+      const token = jwt.sign(req.user, "your_jwt_secret");
+      return res.json({ user: req.user, token });
     }
   );
 

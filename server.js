@@ -4,7 +4,7 @@ const bodyParser = require("body-parser");
 const cors = require("cors");
 const path = require("path");
 const app = express();
-const apiRoutes = require("./src/routes/api.js");
+const loginRoutes = require("./src/routes/login.js");
 const auth = require("./src/routes/auth.js");
 const session = require("express-session");
 const mongo = require("mongodb").MongoClient;
@@ -29,7 +29,7 @@ app.use(
 
 mongo.connect(
   process.env.MONGO_URI,
-  { useUnifiedTopology: true },
+  { useNewUrlParser: true, useUnifiedTopology: true },
   (err, client) => {
     let db = client.db("my-daily-climb");
     if (err) {
@@ -38,7 +38,7 @@ mongo.connect(
       console.log("Successful database connection");
 
       auth(app, db);
-      apiRoutes(app, db);
+      loginRoutes(app, db);
 
       app.use(function (req, res, next) {
         res.status(404).type("text").send("Not Found");

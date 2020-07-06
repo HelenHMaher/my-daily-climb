@@ -5,8 +5,20 @@ import Profile from "./views/profile";
 import Home from "./views/home";
 
 function App() {
-  const isAuthenticated = true;
-  const name = "John";
+  function GetCookie(Name) {
+    const Cookies = document.cookie.split(";");
+    for (let i = 0; i < Cookies.length; i++) {
+      let CName = Cookies[i].substr(0, Cookies[i].indexOf("="));
+      const CValue = Cookies[i].substr(Cookies[i].indexOf("=") + 1);
+      CName = CName.replace(/^s+|s+$/g, "");
+      if (Name === CName) {
+        return unescape(CValue);
+      }
+    }
+    return null;
+  }
+  const name = GetCookie("Username");
+  const isAuthenticated = name === "" || name === null ? false : true;
 
   return (
     <BrowserRouter>
