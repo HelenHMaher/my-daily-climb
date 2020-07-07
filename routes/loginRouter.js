@@ -7,7 +7,7 @@ module.exports = (app, db) => {
       next();
     } else {
       console.log("not logged in");
-      res.redirect("/");
+      res.redirect("/loginPage");
     }
   }
 
@@ -16,12 +16,16 @@ module.exports = (app, db) => {
     res.send("<3");
   });
 
-  app.use("/", ensureAuthenticated, function (req, res) {
-    res.sendFile("/public/index.html");
+  app.get("/", ensureAuthenticated, function (req, res) {
+    res.redirect("/profile");
   });
 
-  app.use("/loginPage", function (req, res) {
-    res.sendFile("/public/login.html");
+  app.get("/profile", ensureAuthenticated, function (req, res) {
+    res.sendFile(__dirname + "/public/index.html");
+  });
+
+  app.get("/loginPage", function (req, res) {
+    res.sendFile(__dirname + "/../public/login.html");
   });
 
   app.route("/login").post(
@@ -29,7 +33,7 @@ module.exports = (app, db) => {
       failureRedirect: "/loginPage",
     }),
     (req, res, next) => {
-      res.redirect("/");
+      res.redirect("/profile");
     }
   );
 
@@ -69,7 +73,7 @@ module.exports = (app, db) => {
     },
     passport.authenticate("local", { failureRedirect: "/loginPage" }),
     (req, res, next) => {
-      res.redirect("/");
+      res.redirect("/profile");
     }
   );
 

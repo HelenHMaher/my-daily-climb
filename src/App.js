@@ -22,7 +22,7 @@ function App() {
       </nav>
       <Switch>
         <Route path="/" exact component={Home} />
-        <Route path="/profile/" exact component={Profile} />
+        <Route path="/profile" exact component={Profile} />
       </Switch>
     </BrowserRouter>
   );
