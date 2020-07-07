@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8" />
+  <link rel="icon" href="%PUBLIC_URL%/favicon.png" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="theme-color" content="#000000" />
+  <meta name="description" content="My Daily Climb: a fitness tracker for rock climbers" />
+  <title>Login: My Daily Climb</title>
+</head>
+
+<body>
+  <div>
+    <div className="title">Login</div>
+    <form class="login" action="/login" method="POST">
+      <div class="inputField">
+        <label>Username:</label>
+        <input type="text" name="username" required>
+      </div>
+      <div class="inputField">
+        <label>Password:</label>
+        <input type="password" name="password" required>
+      </div>
+      <div class="inputField">
+        <input type="submit" value="Log In">
+      </div>
+    </form>
+
+    <div class="title">Register</div>
+    <form class="register" action="/register" method="POST">
+      <div class="inputField">
+        <label>Username:</label>
+        <input type="text" name="username" required>
+      </div>
+      <div class="inputField">
+        <label>Password:</label>
+        <input id="pwd" type="password" name="password" required>
+      </div>
+      <div class="inputField">
+        <label>Confirm Password:</label>
+        <input id="confirmPwd" type="password" name="ConfirmPassword" required>
+      </div>
+      <div class="inputField">
+        <input type="submit" value="Register">
+      </div>
+    </form>
+  </div>
+
+  <script type="text/javascript">
+    function validate() {
+      const password = document.getElementById("pwd").value;
+      const confirmPassword = document.getElementById("confirmPwd").value;
+      if (password !== confirmPassword) {
+        alert("Passwords do not match.")
+        return false;
+      }
+      return true;
+    }
+  </script>
+
+</body>
+
+
+</html>

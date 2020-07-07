@@ -1,17 +1,9 @@
-import React, { useEffect } from "react";
-import { BrowserRouter, Route, Switch, Link, Redirect } from "react-router-dom";
-import Login from "./views/login";
+import React from "react";
+import { BrowserRouter, Route, Switch, Link } from "react-router-dom";
 import Profile from "./views/profile";
 import Home from "./views/home";
 
 function App() {
-  const name = "John";
-  const isAuthenticated = false;
-
-  useEffect(() => {
-    console.log(document.cookie);
-  });
-
   return (
     <BrowserRouter>
       <header>My Daily Climb</header>
@@ -20,33 +12,17 @@ function App() {
           <li>
             <Link to="/">Home</Link>
           </li>
-          {isAuthenticated ? (
-            <li>
-              <li>
-                <Link to={`/profile/${name}`}>My Profile</Link>
-              </li>
-              <li>
-                <Link to="/logout">Logout</Link>
-              </li>
-            </li>
-          ) : (
-            <li>
-              <Link to="/login">Login</Link>
-            </li>
-          )}
+          <li>
+            <Link to="/profile">My Profile</Link>
+          </li>
+          <li>
+            <a href="/logout">Logout</a>
+          </li>
         </ul>
       </nav>
       <Switch>
         <Route path="/" exact component={Home} />
-        <Route path="/login" exact component={Login} />
-        <Route path="/logout" exact component={Home} />
-        {isAuthenticated ? (
-          <>
-            <Route path={`/profile/${name}`} component={Profile} />
-          </>
-        ) : (
-          <Redirect to="/login" />
-        )}
+        <Route path="/profile/" exact component={Profile} />
       </Switch>
     </BrowserRouter>
   );

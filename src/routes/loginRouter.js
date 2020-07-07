@@ -1,6 +1,5 @@
 const passport = require("passport");
 const bcrypt = require("bcrypt");
-const jwt = require("jsonwebtoken");
 
 module.exports = (app, db) => {
   function ensureAuthenticated(req, res, next) {
@@ -12,33 +11,32 @@ module.exports = (app, db) => {
     }
   }
 
-  app.route("/").get(function (req, res) {
-    res.sendFile("/public/index.html");
-  });
-
   // define the first route
   app.route("/heartbeat").get(function (req, res) {
     res.send("<3");
   });
 
-  app.route("/login").post(
-    passport.authenticate("local", {
-      failureRedirect: "/",
-    }),
-    (req, res, next) => {
-      const token = jwt.sign(req.user, "your_jwt_secret");
-      return res.json({ user: req.user, token });
-    }
-  );
-
-  app.use("/profile", ensureAuthenticated, function (req, res) {
+  app.use("/", ensureAuthenticated, function (req, res) {
     res.sendFile("/public/index.html");
   });
+
+  app.use("/loginPage", function (req, res) {
+    res.sendFile("/public/login.html");
+  });
+
+  app.route("/login").post(
+    passport.authenticate("local", {
+      failureRedirect: "/loginPage",
+    }),
+    (req, res, next) => {
+      res.redirect("/");
+    }
+  );
 
   app.route("/logout").get(function (req, res) {
     req.logout();
     console.log("logout");
-    res.redirect("/");
+    res.redirect("/loginPage");
   });
 
   app.route("/register").post(
@@ -49,7 +47,7 @@ module.exports = (app, db) => {
           if (err) {
             next(err);
           } else if (user) {
-            res.redirect("/");
+            res.redirect("/loginPage");
           } else {
             const hash = bcrypt.hashSync(req.body.password, 12);
             db.collection("my-daily-climb").insertOne(
@@ -59,7 +57,7 @@ module.exports = (app, db) => {
               },
               (err, doc) => {
                 if (err) {
-                  res.redirect("/");
+                  res.redirect("/loginPage");
                 } else {
                   next(null, user);
                 }
@@ -69,14 +67,9 @@ module.exports = (app, db) => {
         }
       );
     },
-    passport.authenticate(
-      "local",
-      { session: false },
-      { failureRedirect: "/" }
-    ),
+    passport.authenticate("local", { failureRedirect: "/loginPage" }),
     (req, res, next) => {
-      const token = jwt.sign(req.user, "your_jwt_secret");
-      return res.json({ user: req.user, token });
+      res.redirect("/");
     }
   );
 
