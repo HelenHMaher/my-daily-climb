@@ -8,6 +8,8 @@ const session = require("express-session");
 const mongo = require("mongodb").MongoClient;
 const path = require("path");
 
+const FAKE_SECRET = "dfhkeofaiohfa";
+
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
@@ -19,7 +21,7 @@ app.get("/heartbeat", function (req, res) {
 
 app.use(
   session({
-    secret: process.env.SESSION_SECRET,
+    secret: FAKE_SECRET,
     resave: true,
     saveUninitialized: true,
   })
