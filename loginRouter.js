@@ -1,5 +1,9 @@
 const passport = require("passport");
 const bcrypt = require("bcrypt");
+const path = require("path");
+
+const favicon = require("express-favicon");
+const express = require("express");
 
 module.exports = (app, db) => {
   function ensureAuthenticated(req, res, next) {
@@ -11,21 +15,18 @@ module.exports = (app, db) => {
     }
   }
 
-  // define the first route
-  app.route("/heartbeat").get(function (req, res) {
-    res.send("<3");
+  app.use(favicon(__dirname + "/public/favicon.png"));
+  app.use("/my-daily-climb/", express.static(path.join(__dirname, "build")));
+  app.get("/heartbeat", function (req, res) {
+    res.send("<3 <3");
   });
 
   app.get("/", ensureAuthenticated, function (req, res) {
-    res.redirect("/profile");
-  });
-
-  app.get("/profile", ensureAuthenticated, function (req, res) {
-    res.sendFile(__dirname + "/public/index.html");
+    res.sendFile(path.join(__dirname, "build", "index.html"));
   });
 
   app.get("/loginPage", function (req, res) {
-    res.sendFile(__dirname + "/../public/login.html");
+    res.sendFile(path.join(__dirname, "build", "login.html"));
   });
 
   app.route("/login").post(
@@ -33,7 +34,7 @@ module.exports = (app, db) => {
       failureRedirect: "/loginPage",
     }),
     (req, res, next) => {
-      res.redirect("/profile");
+      res.redirect("/");
     }
   );
 
@@ -51,6 +52,7 @@ module.exports = (app, db) => {
           if (err) {
             next(err);
           } else if (user) {
+            console.log("user exists");
             res.redirect("/loginPage");
           } else {
             const hash = bcrypt.hashSync(req.body.password, 12);
@@ -63,6 +65,7 @@ module.exports = (app, db) => {
                 if (err) {
                   res.redirect("/loginPage");
                 } else {
+                  console.log("new user logged in");
                   next(null, user);
                 }
               }
@@ -73,7 +76,7 @@ module.exports = (app, db) => {
     },
     passport.authenticate("local", { failureRedirect: "/loginPage" }),
     (req, res, next) => {
-      res.redirect("/profile");
+      res.redirect("/");
     }
   );
 
