@@ -4,6 +4,10 @@ import Profile from "./views/profile";
 import Home from "./views/home";
 
 function App() {
+  return <div>My Daily Climb --Home</div>;
+}
+
+/*function App() {
   return (
     <BrowserRouter>
       <header>My Daily Climb</header>
@@ -26,6 +30,6 @@ function App() {
       </Switch>
     </BrowserRouter>
   );
-}
+}*/
 
 export default App;

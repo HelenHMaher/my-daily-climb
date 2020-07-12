@@ -21,7 +21,7 @@ module.exports = (app, db) => {
     res.send("<3 <3");
   });
 
-  app.get("/", ensureAuthenticated, function (req, res) {
+  app.get("/profile", ensureAuthenticated, function (req, res) {
     res.sendFile(path.join(__dirname, "build", "index.html"));
   });
 
@@ -31,11 +31,9 @@ module.exports = (app, db) => {
 
   app.route("/login").post(
     passport.authenticate("local", {
+      successRedirect: "/profile",
       failureRedirect: "/loginPage",
-    }),
-    (req, res, next) => {
-      res.redirect("/");
-    }
+    })
   );
 
   app.route("/logout").get(function (req, res) {
@@ -44,41 +42,35 @@ module.exports = (app, db) => {
     res.redirect("/loginPage");
   });
 
-  app.route("/register").post(
-    (req, res, next) => {
-      db.collection("my-daily-climb").findOne(
-        { username: req.body.username },
-        (err, user) => {
-          if (err) {
-            next(err);
-          } else if (user) {
-            console.log("user exists");
-            res.redirect("/loginPage");
-          } else {
-            const hash = bcrypt.hashSync(req.body.password, 12);
-            db.collection("my-daily-climb").insertOne(
-              {
-                username: req.body.username,
-                password: hash,
-              },
-              (err, doc) => {
-                if (err) {
-                  res.redirect("/loginPage");
-                } else {
-                  console.log("new user logged in");
-                  next(null, user);
-                }
+  app.route("/register").post((req, res, next) => {
+    db.collection("my-daily-climb").findOne(
+      { username: req.body.username },
+      (err, user) => {
+        if (err) {
+          next(err);
+        } else if (user) {
+          console.log("user exists");
+          res.redirect("/loginPage");
+        } else {
+          const hash = bcrypt.hashSync(req.body.password, 12);
+          db.collection("my-daily-climb").insertOne(
+            {
+              username: req.body.username,
+              password: hash,
+            },
+            (err, doc) => {
+              if (err) {
+                res.redirect("/loginPage");
+              } else {
+                console.log("new user logged in");
+                next(null, user);
               }
-            );
-          }
+            }
+          );
         }
-      );
-    },
-    passport.authenticate("local", { failureRedirect: "/loginPage" }),
-    (req, res, next) => {
-      res.redirect("/");
-    }
-  );
+      }
+    );
+  }, passport.authenticate("local", { successRedirect: "/profile", failureRedirect: "/loginPage" }));
 
   app.use((req, res, next) => {
     res.status(404).type("text").send("Not Found");
