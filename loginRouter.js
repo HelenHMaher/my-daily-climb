@@ -1,7 +1,7 @@
 const passport = require("passport");
 const bcrypt = require("bcrypt");
 const path = require("path");
-
+const bodyParser = require("body-parser");
 const favicon = require("express-favicon");
 const express = require("express");
 
@@ -15,13 +15,16 @@ module.exports = (app, db) => {
     }
   }
 
+  app.use(bodyParser.json());
+  app.use(bodyParser.urlencoded({ extended: true }));
+
   app.use(favicon(__dirname + "/public/favicon.png"));
   app.use("/my-daily-climb/", express.static(path.join(__dirname, "build")));
   app.get("/heartbeat", function (req, res) {
     res.send("<3 <3");
   });
 
-  app.get("/profile", ensureAuthenticated, function (req, res) {
+  app.get("/", function (req, res) {
     res.sendFile(path.join(__dirname, "build", "index.html"));
   });
 
