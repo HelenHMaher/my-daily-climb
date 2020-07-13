@@ -45,7 +45,7 @@ module.exports = (app, db) => {
         if (err) {
           next(err);
         } else if (user) {
-          console.log("user exists");
+          console.log("username has already been taken");
           res.redirect("/loginPage");
         } else {
           const hash = bcrypt.hashSync(req.body.password, 12);

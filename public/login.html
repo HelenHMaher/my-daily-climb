@@ -47,6 +47,7 @@
       <div class="inputField">
         <input type="submit" value="Register">
       </div>
+      <div class="registerMessage"></div>
     </form>
   </div>
 
@@ -56,11 +57,11 @@
 
   <script type="text/javascript">
     $('.register').submit(function validate() {
-      /*const password = document.getElementById("pwd").value;
+      const password = document.getElementById("pwd").value;
       const confirmPassword = document.getElementById("confirmPwd").value;
       if (password === confirmPassword) {
         return true;
-      }*/
+      }
       alert("Passwords do not match.")
       return false;
     })
