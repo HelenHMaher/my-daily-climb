@@ -24,10 +24,6 @@ module.exports = (app, db) => {
     res.send("<3 <3");
   });
 
-  app.get("/", function (req, res) {
-    res.sendFile(path.join(__dirname, "build", "index.html"));
-  });
-
   app.get("/loginPage", function (req, res) {
     res.sendFile(path.join(__dirname, "build", "login.html"));
   });
