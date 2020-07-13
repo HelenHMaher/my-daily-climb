@@ -19,13 +19,23 @@ module.exports = (app, db) => {
   app.use(bodyParser.urlencoded({ extended: true }));
 
   app.use(favicon(__dirname + "/public/favicon.png"));
-  app.use("/my-daily-climb/", express.static(path.join(__dirname, "build")));
-  app.get("/heartbeat", function (req, res) {
-    res.send("<3 <3");
-  });
 
   app.get("/loginPage", function (req, res) {
     res.sendFile(path.join(__dirname, "build", "login.html"));
+  });
+
+  app.use(
+    "/",
+    ensureAuthenticated,
+    express.static(path.join(__dirname, "build"))
+  );
+
+  app.get("/", function (req, res) {
+    res.redirect("/profile");
+  });
+
+  app.get("/profile", function (req, res) {
+    res.sendFile(path.join(__dirname, "build", "index.html"));
   });
 
   app.route("/login").post(
