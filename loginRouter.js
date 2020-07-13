@@ -8,6 +8,7 @@ const express = require("express");
 module.exports = (app, db) => {
   function ensureAuthenticated(req, res, next) {
     if (req.isAuthenticated()) {
+      console.log("authenticated");
       next();
     } else {
       console.log("not logged in");
@@ -22,20 +23,6 @@ module.exports = (app, db) => {
 
   app.get("/loginPage", function (req, res) {
     res.sendFile(path.join(__dirname, "build", "login.html"));
-  });
-
-  app.use(
-    "/",
-    ensureAuthenticated,
-    express.static(path.join(__dirname, "build"))
-  );
-
-  app.get("/", function (req, res) {
-    res.redirect("/profile");
-  });
-
-  app.get("/profile", function (req, res) {
-    res.sendFile(path.join(__dirname, "build", "index.html"));
   });
 
   app.route("/login").post(
@@ -80,6 +67,16 @@ module.exports = (app, db) => {
       }
     );
   }, passport.authenticate("local", { successRedirect: "/profile", failureRedirect: "/loginPage" }));
+
+  app.use(
+    "/",
+    ensureAuthenticated,
+    express.static(path.join(__dirname, "build"))
+  );
+
+  app.get("/profile", function (req, res) {
+    res.sendFile(path.join(__dirname, "build", "index.html"));
+  });
 
   app.use((req, res, next) => {
     res.status(404).type("text").send("Not Found");

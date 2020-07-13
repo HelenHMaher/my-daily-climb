@@ -33,10 +33,6 @@ mongo.connect(
       auth(app, db);
       loginRoutes(app, db);
 
-      app.get("/loginPage", function (req, res) {
-        res.sendFile(path.join(__dirname, "build", "login.html"));
-      });
-
       app.use(function (req, res, next) {
         res.status(404).type("text").send("Not Found");
       });
