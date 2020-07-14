@@ -26,21 +26,18 @@ module.exports = (app, db) => {
     res.render(process.cwd() + "/views/login.pug", {});
   });
 
-  app.route("/login").post(function (req, res) {
-    passport.authenticate("local", function (err, user, info) {
-      if (err) {
-        console.log(err);
-      }
-      if (!user) {
-        console.log(info);
-        res.render(process.cwd() + path.join(__dirname, "build", "login.pug"), {
-          loginMessage: "invalid login",
-        });
-      }
-      console.log("got user");
-      res.redirect("/profile");
+  app.get("/invalidLogin", function (req, res) {
+    res.render(process.cwd() + "/views/login.pug", {
+      loginMessage: "invalid login",
     });
   });
+
+  app.route("/login").post(
+    passport.authenticate("local", {
+      failureRedirect: "/invalidLogin",
+      successRedirect: "/profile",
+    })
+  );
 
   app.route("/logout").get(function (req, res) {
     req.logout();
