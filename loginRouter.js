@@ -18,19 +18,29 @@ module.exports = (app, db) => {
 
   app.use(bodyParser.json());
   app.use(bodyParser.urlencoded({ extended: true }));
+  app.set("view engine", "pug");
 
   app.use(favicon(__dirname + "/public/favicon.png"));
 
   app.get("/loginPage", function (req, res) {
-    res.sendFile(path.join(__dirname, "build", "login.html"));
+    res.render(process.cwd() + "/views/login.pug", {});
   });
 
-  app.route("/login").post(
-    passport.authenticate("local", {
-      successRedirect: "/profile",
-      failureRedirect: "/loginPage",
-    })
-  );
+  app.route("/login").post(function (req, res) {
+    passport.authenticate("local", function (err, user, info) {
+      if (err) {
+        console.log(err);
+      }
+      if (!user) {
+        console.log(info);
+        res.render(process.cwd() + path.join(__dirname, "build", "login.pug"), {
+          loginMessage: "invalid login",
+        });
+      }
+      console.log("got user");
+      res.redirect("/profile");
+    });
+  });
 
   app.route("/logout").get(function (req, res) {
     req.logout();
