@@ -28,7 +28,13 @@ module.exports = (app, db) => {
 
   app.get("/invalidLogin", function (req, res) {
     res.render(process.cwd() + "/views/login.pug", {
-      loginMessage: "invalid login",
+      loginMessage: "invalid input",
+    });
+  });
+
+  app.get("/invalidRegister", function (req, res) {
+    res.render(process.cwd() + "/views/login.pug", {
+      registerMessage: "username has already been taken",
     });
   });
 
@@ -53,7 +59,7 @@ module.exports = (app, db) => {
           next(err);
         } else if (user) {
           console.log("username has already been taken");
-          res.redirect("/loginPage");
+          res.redirect("/invalidRegister");
         } else {
           const hash = bcrypt.hashSync(req.body.password, 12);
           db.collection("my-daily-climb").insertOne(
