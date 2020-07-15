@@ -14,21 +14,36 @@ html
         font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Oxygen", "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue", sans-serif;
         margin: 10px;
       }
-      input[type="text"] {
+      input[type="text", type="password"] {
+        width: 200px;
+      }
+      form {
+        background: lightgrey;
+        width: 310px;
+        padding: 10px;
+      }
+
+      .inputField {
         margin-top: 10px;
-        width: 250px;
         display: flex;
         justify-content: space-between;
         align-items: center;
       }
-      form {
-        background: lightgrey;
-        width: 300px;
+
+      .red {
+        color: red;
+      }
+
+      .logout {
+        background: white;
       }
 
 
   body
     div
+      div(class="header")
+        h1 My Daily Climb
+        h3 a fitness tracking app for rock climbers
       div(class="title")
         h2 Login
     form(class="login" action="/login" method="POST")

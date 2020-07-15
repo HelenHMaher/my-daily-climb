@@ -1,16 +1,13 @@
 const express = require("express");
-const auth = require("./routes/auth.js");
+const app = express();
 const session = require("express-session");
 const mongo = require("mongodb").MongoClient;
-const app = express();
 const loginRoutes = require("./loginRouter.js");
-const path = require("path");
-
-const FAKE_SECRET = "dfhkeofaiohfa";
+const auth = require("./routes/auth.js");
 
 app.use(
   session({
-    secret: FAKE_SECRET,
+    secret: process.env.SESSION_SECRET,
     resave: true,
     saveUninitialized: true,
   })
