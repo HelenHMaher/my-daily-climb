@@ -52,7 +52,7 @@ module.exports = (app, db) => {
   });
 
   app.route("/register").post((req, res, next) => {
-    db.collection("my-daily-climb").findOne(
+    db.collection("climber-profiles").findOne(
       { username: req.body.username },
       (err, user) => {
         if (err) {
@@ -62,7 +62,7 @@ module.exports = (app, db) => {
           res.redirect("/invalidRegister");
         } else {
           const hash = bcrypt.hashSync(req.body.password, 12);
-          db.collection("my-daily-climb").insertOne(
+          db.collection("climber-profiles").insertOne(
             {
               username: req.body.username,
               password: hash,

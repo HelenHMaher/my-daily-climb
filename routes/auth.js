@@ -12,7 +12,7 @@ module.exports = (app, db) => {
   });
 
   passport.deserializeUser(function (id, done) {
-    db.collection("my-daily-climb").findOne(
+    db.collection("climber-profiles").findOne(
       { _id: new ObjectID(id) },
       (err, doc) => {
         done(null, doc);
@@ -22,7 +22,7 @@ module.exports = (app, db) => {
 
   passport.use(
     new LocalStrategy((username, password, done) => {
-      db.collection("my-daily-climb").findOne({ username }, (err, user) => {
+      db.collection("climber-profiles").findOne({ username }, (err, user) => {
         console.log("User " + username + " attempted to log in.");
         if (err) {
           return done(err);
