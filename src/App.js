@@ -1,6 +1,12 @@
 import React from "react";
 import { Router, Route, Link } from "react-router";
 
+import Home from "./components/Home";
+import ClimbingSession from "./components/ClimbingSession";
+import LogWorkout from "./components/LogWorkout";
+import DrylandWorkouts from "./components/DrylandWorkouts";
+import MyProfile from "./components/MyProfile";
+
 function App() {
   return (
     <div>
@@ -24,23 +30,12 @@ function App() {
           </li>
         </ul>
         <Route exact path="/" component={Home} />
-        <Route
-          exact
-          path="/climbing-sessionclimbing-session"
-          component={ClimbingSession}
-        />
+        <Route exact path="/climbing-session" component={ClimbingSession} />
         <Route exact path="/log-workout" component={LogWorkout} />
         <Route exact path="/dryland-workouts" component={DrylandWorkouts} />
         <Route exact path="/my-profile" component={MyProfile} />
       </nav>
       <Router>
-        <h2>Log a Climbing Session</h2>
-        {/*inside the collection "climbing sessions" within "climber-profiles"
-        +creates a new climbing session containing indoor/outdoor, location, date, durration, type, climbing partner, notes
-        +I can add individual climbs within this session
-        +above information is displayed and can be changed, deleted or updated
-        --these climbing sessions can be displayed and searched in the profile section*/}
-
         <form class="logout" action="/logout">
           <button type="submit">Logout</button>
         </form>
