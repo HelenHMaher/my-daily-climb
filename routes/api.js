@@ -1,160 +1,103 @@
-const MongoClient = require("mongodb").MongoClient;
 const ObjectId = require("mongodb").ObjectId;
-const MONGODB_CONNECTION_STRING = process.env.DB;
 //Example connection: MongoClient.connect(MONGODB_CONNECTION_STRING, function(err, db) {});
 
-module.exports = function (app) {
+module.exports = function (app, db) {
   app
-    .route("/api/climbs")
+    .route("/api/drylandWorkouts")
 
     .get(function (req, res) {
-      //response will be array of book objects
-      //json res format: [{"_id": bookid, "title": book_title, "commentcount": num_of_comments },...]
-      MongoClient.connect(MONGODB_CONNECTION_STRING, (err, client) => {
-        const db = client.db("myDailyClimb");
-        if (err) {
-          console.log(`Database err: ${err}`);
-        } else {
-          console.log(`Successful database connection`);
-          db.collection("climb")
-            .find({})
-            .toArray((err, climbs) => {
-              if (err) return res.json(`could not find entries: ${err}`);
-              const climbsArray = climbs.map((entry) => {
-                let climb = {
-                  _id: entry._id,
-                  title: entry.climb_name,
-                  commentcount: entry.num_of_comments,
-                };
-                return climb;
-              });
-              res.json(climbsArray);
-            });
-        }
-      });
+      db.collection("drylandWorkouts")
+        .find({})
+        .toArray((err, workouts) => {
+          if (err) return res.json(`could not find entries: ${err}`);
+          const workoutsArray = workouts.map((entry) => {
+            let workout = {
+              _id: entry._id,
+              title: entry.workout_name,
+              commentcount: entry.num_of_comments,
+            };
+            return workout;
+          });
+          res.json(workoutsArray);
+        });
     })
 
     .post(function (req, res) {
       if (!req.body.title) return res.json("please submit a title");
-      const climb = {
-        climb_title: req.body.title,
+      const workout = {
+        workout_title: req.body.title,
         num_of_comments: 0,
         comments: [],
       };
-      //response will contain new book object including atleast _id and title
-      MongoClient.connect(MONGODB_CONNECTION_STRING, (err, client) => {
-        const db = client.db("myDailyClimb");
-        if (err) {
-          console.log(`Database err: ${err}`);
-        } else {
-          console.log("Successful database connection");
-          db.collection("climb").insertOne(climb, (err, doc) => {
-            if (err) res.json(`could not update: ${err}`);
-            const entry = { _id: doc.insertedId, title: climb.climb_title };
-            res.json(entry);
-          });
-        }
+      db.collection("drylandWorkouts").insertOne(workout, (err, doc) => {
+        if (err) res.json(`could not update: ${err}`);
+        const entry = { _id: doc.insertedId, title: workout.workout_title };
+        res.json(entry);
       });
     })
 
     .delete(function (req, res) {
-      //if successful response will be 'complete delete successful'
-      MongoClient.connect(MONGODB_CONNECTION_STRING, (err, client) => {
-        const db = client.db("myDailyClimb");
-        if (err) {
-          console.log(`Database err: ${err}`);
-        } else {
-          console.log("Successful database connection");
-          db.collection("climb").deleteMany({}, (err, data) => {
-            if (err) res.json(`could not delete: ${err}`);
-            res.json("complete delete successful");
-          });
-        }
+      db.collection("drylandWorkouts").deleteMany({}, (err, data) => {
+        if (err) res.json(`could not delete: ${err}`);
+        res.json("complete delete successful");
       });
     });
 
   app
-    .route("/api/climbs/:id")
+    .route("/api/drylandWorkouts/:id")
     .get(function (req, res) {
-      const climbId = req.params.id;
-      //json res format: {"_id": bookid, "title": book_title, "comments": [comment,comment,...]}
-      MongoClient.connect(MONGODB_CONNECTION_STRING, (err, client) => {
-        const db = client.db("myDailyClimb");
-        if (err) {
-          console.log(`Database err: ${err}`);
-        } else {
-          console.log("Successful database connection");
-          db.collection("climb")
-            .find({ _id: new ObjectId(climbId) })
-            .toArray((err, data) => {
-              if (err) res.json(`could not find ${climbId} ${err}`);
-              if (data[0]) {
-                const climb = {
-                  _id: data[0]._id,
-                  title: data[0].climb_title,
-                  comments: data[0].comments,
-                };
-                res.json(climb);
-              } else {
-                console.log(climbId);
-                res.json(`no climb exists`);
-              }
-            });
-        }
-      });
+      const workoutId = req.params.id;
+      db.collection("drylandWorkouts")
+        .find({ _id: new ObjectId(workoutId) })
+        .toArray((err, data) => {
+          if (err) res.json(`could not find ${workoutId} ${err}`);
+          if (data[0]) {
+            const workout = {
+              _id: data[0]._id,
+              title: data[0].workout_title,
+              comments: data[0].comments,
+            };
+            res.json(workout);
+          } else {
+            console.log(workoutId);
+            res.json(`no workout exists`);
+          }
+        });
     })
 
     .post(function (req, res) {
-      const climbId = req.params.id;
+      const workoutId = req.params.id;
       const comment = req.body.comment;
-      //json res format same as .get
-      MongoClient.connect(MONGODB_CONNECTION_STRING, (err, client) => {
-        const db = client.db("myDailyClimb");
-        if (err) {
-          console.log(`Database err: ${err}`);
-        } else {
-          console.log("Successful database connection");
-          db.collection("climb").findAndModify(
-            { _id: new ObjectId(climbId) },
-            {},
-            { $inc: { num_of_comments: 1 }, $push: { comments: comment } },
-            { new: true, upsert: false },
-            (err, data) => {
-              if (err) res.json(`could not update ${climbId} ${err}`);
-              const climb = {
-                _id: data.value._id,
-                title: data.value.climb_title,
-                comments: data.value.comments,
-              };
-              res.json(climb);
-            }
-          );
+      db.collection("drylandWorkout").findAndModify(
+        { _id: new ObjectId(workoutId) },
+        {},
+        { $inc: { num_of_comments: 1 }, $push: { comments: comment } },
+        { new: true, upsert: false },
+        (err, data) => {
+          if (err) res.json(`could not update ${workoutId} ${err}`);
+          const workout = {
+            _id: data.value._id,
+            title: data.value.workout_title,
+            comments: data.value.comments,
+          };
+          res.json(workout);
         }
-      });
+      );
     })
 
     .delete(function (req, res) {
-      const climbId = req.params.id;
-      //if successful response will be 'delete successful'
-      MongoClient.connect(MONGODB_CONNECTION_STRING, (err, client) => {
-        const db = client.db("myDailyClimb");
-        if (err) {
-          console.log(`Database err: ${err}`);
-        } else {
-          console.log("Successful database connection");
-          db.collection("climb").findOneAndDelete(
-            { _id: new ObjectId(climbId) },
-            (err, doc) => {
-              if (err) {
-                res.send(`could not delete ${climbId} ${err}`);
-              } else {
-                doc.value
-                  ? res.json(`delete successful`)
-                  : res.json(`no climb exists`);
-              }
-            }
-          );
+      const workoutId = req.params.id;
+      db.collection("drylandWorkout").findOneAndDelete(
+        { _id: new ObjectId(workoutId) },
+        (err, doc) => {
+          if (err) {
+            res.send(`could not delete ${workoutId} ${err}`);
+          } else {
+            doc.value
+              ? res.json(`delete successful`)
+              : res.json(`no workout exists`);
+          }
         }
-      });
+      );
     });
 };
