@@ -10,23 +10,20 @@ function ClimbingSession() {
         +above information is displayed and can be changed, deleted or updated
         --these climbing sessions can be displayed and searched in the profile section*/}
 
-      <form id="newBookForm" class="border">
-        <input
-          type="text"
-          id="bookTitleToAdd"
-          name="title"
-          placeholder="New Book Title"
-        />
-        <button type="submit" value="Submit" id="newBook">
-          Submit New Book!
+      <form id="newSessionForm">
+        <input type="date" id="date" placeholder="Date" />
+        <input type="text" id="location" placeholde="Location" />
+
+        <button type="submit" value="Submit" id="newClimb">
+          Submit New Climb!
         </button>
       </form>
       <div id="display"></div>
-      <div id="bookDetail" class="border">
-        <p id="detailTitle">Select a book to see it's details and comments</p>
+      <div id="climbDetail">
+        <p id="detailTitle">Select a climb to see it's details and comments</p>
         <ol id="detailComments"></ol>
       </div>
-      <button id="deleteAllBooks">Delete all books...</button>
+      <button id="deleteClimb">Delete climb...</button>
     </div>
   );
 }
