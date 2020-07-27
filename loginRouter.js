@@ -83,10 +83,6 @@ module.exports = (app, db) => {
   app.use(
     "/",
     ensureAuthenticated,
-    function (req, res, next) {
-      console.log(req.user.username + " is logged in");
-      next();
-    },
     express.static(path.join(__dirname, "build"))
   );
 
