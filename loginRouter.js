@@ -8,7 +8,6 @@ const express = require("express");
 module.exports = (app, db) => {
   function ensureAuthenticated(req, res, next) {
     if (req.isAuthenticated()) {
-      console.log("authenticated");
       next();
     } else {
       console.log("not logged in");
@@ -71,7 +70,7 @@ module.exports = (app, db) => {
               if (err) {
                 res.redirect("/loginPage");
               } else {
-                console.log("new user logged in");
+                console.log("new user " + req.body.username + " logged in");
                 next(null, user);
               }
             }
@@ -84,10 +83,15 @@ module.exports = (app, db) => {
   app.use(
     "/",
     ensureAuthenticated,
+    function (req, res, next) {
+      console.log(req.user.username + " is logged in");
+      next();
+    },
     express.static(path.join(__dirname, "build"))
   );
 
   app.get("/profile", ensureAuthenticated, function (req, res) {
+    console.log(req.user);
     res.sendFile(path.join(__dirname, "build", "index.html"));
   });
 

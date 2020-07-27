@@ -23,14 +23,18 @@ module.exports = (app, db) => {
   passport.use(
     new LocalStrategy((username, password, done) => {
       db.collection("climber-profiles").findOne({ username }, (err, user) => {
-        console.log("User " + username + " attempted to log in.");
         if (err) {
+          console.log("User " + username + " attempted to log in (error).");
           return done(err);
         }
         if (!user) {
+          console.log("Unknown user " + username + " attempted to log in.");
           return done(null, false);
         }
         if (!bcrypt.compareSync(password, user.password)) {
+          console.log(
+            "User " + username + " attempted to log in (invalid password)."
+          );
           return done(null, false);
         }
         return done(null, user);
