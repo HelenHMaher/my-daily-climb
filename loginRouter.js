@@ -3,11 +3,11 @@ const bcrypt = require("bcrypt");
 const path = require("path");
 const bodyParser = require("body-parser");
 const favicon = require("express-favicon");
-const express = require("express");
 
 module.exports = (app, db) => {
   function ensureAuthenticated(req, res, next) {
     if (req.isAuthenticated()) {
+      console.log("logged in");
       next();
     } else {
       console.log("not logged in");
@@ -17,12 +17,12 @@ module.exports = (app, db) => {
 
   app.use(bodyParser.json());
   app.use(bodyParser.urlencoded({ extended: true }));
-  app.set("view engine", "pug");
-
   app.use(favicon(__dirname + "/public/favicon.png"));
 
+  app.set("view engine", "pug");
+
   app.get("/loginPage", function (req, res) {
-    res.render(process.cwd() + "/views/login.pug", {});
+    res.render(path.join(__dirname, "views", "login.pug"), {});
   });
 
   app.get("/invalidLogin", function (req, res) {
@@ -80,16 +80,11 @@ module.exports = (app, db) => {
     );
   }, passport.authenticate("local", { successRedirect: "/profile", failureRedirect: "/loginPage" }));
 
-  app.use(
-    "/",
-    ensureAuthenticated,
-    express.static(path.join(__dirname, "build"))
-  );
-
-  app.get("/profile", ensureAuthenticated, function (req, res) {
-    console.log(req.user);
+  app.get("/profile", function (req, res) {
     res.sendFile(path.join(__dirname, "build", "index.html"));
   });
+
+  app.use("/", ensureAuthenticated);
 
   app.use((req, res, next) => {
     res.status(404).type("text").send("Not Found");

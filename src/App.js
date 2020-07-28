@@ -7,8 +7,6 @@ import LogWorkout from "./components/LogWorkout";
 import DrylandWorkouts from "./components/DrylandWorkouts";
 import MyProfile from "./components/MyProfile";
 
-//use stormpath-sdk-react
-
 function App() {
   return (
     <div>

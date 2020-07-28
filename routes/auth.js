@@ -37,6 +37,7 @@ module.exports = (app, db) => {
           );
           return done(null, false);
         }
+        console.log("User " + username + " logged in.");
         return done(null, user);
       });
     })
