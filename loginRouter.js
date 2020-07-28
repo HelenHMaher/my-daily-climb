@@ -89,14 +89,10 @@ module.exports = (app, db) => {
     })
   );
 
-  app.use(
-    "/",
-    ensureAuthenticated,
-    express.static(path.join(__dirname, "build"))
-  );
+  app.use("/", ensureAuthenticated, express.static(__dirname + "/build"));
 
   app.get("/profile", function (req, res, next) {
-    res.sendFile(path.join(__dirname, "build", "index.html"));
+    res.sendFile(__dirname + "/build/index.html");
   });
 
   app.use((req, res, next) => {
