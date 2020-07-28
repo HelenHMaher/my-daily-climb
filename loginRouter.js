@@ -18,7 +18,7 @@ module.exports = (app, db) => {
 
   app.use(bodyParser.json());
   app.use(bodyParser.urlencoded({ extended: true }));
-  app.use(favicon(__dirname + "/public/favicon.png"));
+  app.use(favicon(__dirname + "/build/favicon.png"));
 
   app.set("view engine", "pug");
 
