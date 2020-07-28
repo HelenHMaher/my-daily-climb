@@ -2,7 +2,7 @@ const express = require("express");
 const app = express();
 const session = require("express-session");
 const mongo = require("mongodb").MongoClient;
-const loginRoutes = require("./loginRouter.js");
+const loginRouter = require("./loginRouter.js");
 const auth = require("./routes/auth.js");
 
 app.use(
@@ -28,7 +28,7 @@ mongo.connect(
       });
 
       auth(app, db);
-      loginRoutes(app, db);
+      loginRouter(app, db);
 
       app.use(function (req, res, next) {
         res.status(404).type("text").send("Not Found");

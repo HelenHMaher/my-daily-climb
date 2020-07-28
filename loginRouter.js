@@ -26,59 +26,67 @@ module.exports = (app, db) => {
   });
 
   app.get("/invalidLogin", function (req, res) {
-    res.render(process.cwd() + "/views/login.pug", {
+    res.render(path.join(__dirname, "views", "login.pug"), {
       loginMessage: "invalid input",
     });
   });
 
   app.get("/invalidRegister", function (req, res) {
-    res.render(process.cwd() + "/views/login.pug", {
+    res.render(path.join(__dirname, "views", "login.pug"), {
       registerMessage: "username has already been taken",
     });
   });
 
-  app.route("/login").post(
+  app.post(
+    "/login",
     passport.authenticate("local", {
       failureRedirect: "/invalidLogin",
       successRedirect: "/profile",
     })
   );
 
-  app.route("/logout").get(function (req, res) {
+  app.get("/logout", function (req, res) {
     req.logout();
     console.log("logout");
     res.redirect("/loginPage");
   });
 
-  app.route("/register").post((req, res, next) => {
-    db.collection("climber-profiles").findOne(
-      { username: req.body.username },
-      (err, user) => {
-        if (err) {
-          next(err);
-        } else if (user) {
-          console.log("username has already been taken");
-          res.redirect("/invalidRegister");
-        } else {
-          const hash = bcrypt.hashSync(req.body.password, 12);
-          db.collection("climber-profiles").insertOne(
-            {
-              username: req.body.username,
-              password: hash,
-            },
-            (err, doc) => {
-              if (err) {
-                res.redirect("/loginPage");
-              } else {
-                console.log("new user " + req.body.username + " logged in");
-                next(null, user);
+  app.post(
+    "/register",
+    function (req, res, next) {
+      db.collection("climber-profiles").findOne(
+        { username: req.body.username },
+        (err, user) => {
+          if (err) {
+            next(err);
+          } else if (user) {
+            console.log("username has already been taken");
+            res.redirect("/invalidRegister");
+          } else {
+            const hash = bcrypt.hashSync(req.body.password, 12);
+            db.collection("climber-profiles").insertOne(
+              {
+                username: req.body.username,
+                password: hash,
+              },
+              (err, doc) => {
+                if (err) {
+                  res.redirect("/loginPage");
+                } else {
+                  console.log("new user " + req.body.username + " logged in");
+                  next(null, user);
+                }
               }
-            }
-          );
+            );
+          }
         }
-      }
-    );
-  }, passport.authenticate("local", { successRedirect: "/profile", failureRedirect: "/loginPage" }));
+      );
+    },
+    passport.authenticate("local", {
+      successRedirect: "/profile",
+      failureRedirect: "/loginPage",
+    })
+  );
 
   app.get("/profile", function (req, res) {
     res.sendFile(path.join(__dirname, "build", "index.html"));
