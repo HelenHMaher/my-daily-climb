@@ -5,6 +5,10 @@ const mongo = require("mongodb").MongoClient;
 const loginRouter = require("./loginRouter.js");
 const auth = require("./routes/auth.js");
 
+const path = require("path");
+const bodyParser = require("body-parser");
+const favicon = require("express-favicon");
+
 app.use(
   session({
     secret: process.env.SESSION_SECRET,
@@ -23,12 +27,23 @@ mongo.connect(
     } else {
       console.log("Successful database connection");
 
+      app.use(bodyParser.json());
+      app.use(bodyParser.urlencoded({ extended: true }));
+      app.use(favicon(__dirname + "/build/favicon.png"));
+      app.use(
+        "/my-daily-climb/",
+        express.static(path.join(__dirname, "build"))
+      );
       app.get("/heartbeat", function (req, res) {
         res.send("<3 <3");
       });
 
-      auth(app, db);
-      loginRouter(app, db);
+      app.get("/profile", function (req, res) {
+        res.sendFile(path.join(__dirname, "build", "index.html"));
+      });
+
+      //auth(app, db);
+      //loginRouter(app, db);
 
       app.use(function (req, res, next) {
         res.status(404).type("text").send("Not Found");

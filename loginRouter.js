@@ -3,6 +3,7 @@ const bcrypt = require("bcrypt");
 const path = require("path");
 const bodyParser = require("body-parser");
 const favicon = require("express-favicon");
+const express = require("express");
 
 module.exports = (app, db) => {
   function ensureAuthenticated(req, res, next) {
@@ -88,11 +89,15 @@ module.exports = (app, db) => {
     })
   );
 
+  app.use(
+    "/",
+    ensureAuthenticated,
+    express.static(path.join(__dirname, "build"))
+  );
+
   app.get("/profile", function (req, res) {
     res.sendFile(path.join(__dirname, "build", "index.html"));
   });
-
-  app.use("/", ensureAuthenticated);
 
   app.use((req, res, next) => {
     res.status(404).type("text").send("Not Found");
