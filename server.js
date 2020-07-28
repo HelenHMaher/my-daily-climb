@@ -30,15 +30,12 @@ mongo.connect(
       app.use(bodyParser.json());
       app.use(bodyParser.urlencoded({ extended: true }));
       app.use(favicon(__dirname + "/build/favicon.png"));
-      app.use(
-        "/my-daily-climb/",
-        express.static(path.join(__dirname, "build"))
-      );
+      app.use("/", express.static(path.join(__dirname, "build")));
       app.get("/heartbeat", function (req, res) {
         res.send("<3 <3");
       });
 
-      app.get("/profile", function (req, res) {
+      app.get("/", function (req, res) {
         res.sendFile(path.join(__dirname, "build", "index.html"));
       });
 
