@@ -95,7 +95,7 @@ module.exports = (app, db) => {
     express.static(path.join(__dirname, "build"))
   );
 
-  app.get("/profile", function (req, res) {
+  app.get("/profile", function (req, res, next) {
     res.sendFile(path.join(__dirname, "build", "index.html"));
   });
 
